@@ -1,4 +1,4 @@
-# HyperVM – Pterodactyl KVM Virtualization
+# HyperVM – Running virtual machine to Pterodactyl 
 
 **HyperVM** is a high-performance, modified Pterodactyl Wings binary designed to run **x86_64 Virtual Machines** using **QEMU/KVM**. It enables native hardware acceleration, UEFI support, and seamless VNC access directly within your Pterodactyl environment.
 
