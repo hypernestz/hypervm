@@ -1,0 +1,132 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2026-03-19T12:55:23+01:00",
+    "name": "HyperVM",
+    "author": "hypernest@gmail.com",
+    "description": "Running virtual machines on Pterodactyl!",
+    "features": [],
+    "docker_images": {
+        "qemu": "ghcr.io\/hypernestz\/hypervm:latest"
+    },
+    "file_denylist": [],
+    "startup": "qemu-system-x86_64 -device qemu-xhci -m {{RAM}} $( [ \"${USE_KVM}\" == \"1\" ] && echo \"--enable-kvm -cpu host\" || echo \"-accel tcg,thread=multi,tb-size=128,split-wx=on\" ) -smp sockets=1,cores=$(nproc),threads=1 $( [ -z \"${ISO_FILE}\" ] && echo \"\" || echo \"-cdrom ${ISO_FILE}\" ) -drive file={{DISK_FILE}}$( [ \"${USE_VIRTIO}\" == \"1\" ] && echo \",aio=native,cache.direct=on,if=virtio\" || echo \"\" ) $( [ -z \"${SHARED_DIR}\" ] && echo \"\" || echo \"-drive file=fat:rw:${SHARED_DIR}\" ) $( [ \"${USE_GPU}\" == \"1\" ] && echo \"-device virtio-gpu-gl-pci,max_hostmem=256M -display egl-headless\" || echo \"-vga std\" ) $( [ \"${USE_VIRTIO_NET}\" == \"1\" ] && echo \"-device virtio-net-pci,netdev=n0 -netdev user,id=n0,{{FORWARD_PORTS}}\" || echo \"-net nic -net user,{{FORWARD_PORTS}}\" ) -usbdevice tablet -boot c,menu=on $( [ \"${USE_UEFI}\" == \"1\" ] && echo \"-pflash OVMF.fd\" || echo \"\" ) -vnc 0.0.0.0:$((SERVER_PORT - 5900)),password -monitor stdio < qemu_cmd.txt",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": [\r\n        \"monitor - type 'help' for more information\",\r\n        \"(qemu) change vnc password\"\r\n    ]\r\n}",
+        "logs": "{}",
+        "stop": "^^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\napt update\r\napt install -y qemu-utils wget curl sed\r\n\r\ncd \/mnt\/server\r\n\r\nif [ ! -f \"disk.qcow2\" ]; then\r\n    echo \"Creating 100GB qcow2 disk image...\"\r\n    qemu-img create -f qcow2 disk.qcow2 100G\r\nelse\r\n    echo \"Disk image already exists, skipping...\"\r\nfi\r\n\r\necho \"Downloading OVMF.fd...\"\r\nwget -O OVMF.fd https:\/\/cdn.bosd.io.vn\/OVMF.fd\r\n\r\necho \"Downloading netboot.xyz ISO...\"\r\nwget -O netboot.xyz.iso https:\/\/boot.netboot.xyz\/ipxe\/netboot.xyz.iso\r\n\r\nuser_passwd=\"lemem1234\"\r\n\r\necho \"Configuring VNC password...\"\r\necho 'change vnc password' > qemu_cmd.txt\r\necho \"$user_passwd\" > vnc_raw_passwd.txt\r\ncat vnc_raw_passwd.txt >> qemu_cmd.txt\r\n\r\nmkdir -p \/home\/container\/shared\r\nchmod 777 \/home\/container\/shared\r\nchmod 666 qemu_cmd.txt OVMF.fd netboot.xyz.iso vnc_raw_passwd.txt disk.qcow2\r\necho \"Installation complete!\"",
+            "container": "ghcr.io\/pterodactyl\/installers:debian",
+            "entrypoint": "\/bin\/sh"
+        }
+    },
+    "variables": [
+        {
+            "name": "Guest Memory",
+            "description": "Total RAM for the VM in MB.",
+            "env_variable": "RAM",
+            "default_value": "2048",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|min:512",
+            "field_type": "text"
+        },
+        {
+            "name": "Enable KVM Acceleration",
+            "description": "Select '1' to use hardware acceleration (KVM). Select '0' for software emulation (TCG). Note: Your node must support virtualization for KVM to work.",
+            "env_variable": "USE_KVM",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "ISO File",
+            "description": "Path to the .iso file for booting (leave blank if not needed).",
+            "env_variable": "ISO_FILE",
+            "default_value": "netboot.xyz.iso",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:255",
+            "field_type": "text"
+        },
+        {
+            "name": "Disk File",
+            "description": "The main virtual disk file name.",
+            "env_variable": "DISK_FILE",
+            "default_value": "disk.qcow2",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:50",
+            "field_type": "text"
+        },
+        {
+            "name": "Additional Ports",
+            "description": "Port forwarding. Format: hostfwd=tcp::HOST-:GUEST (comma separated).",
+            "env_variable": "FORWARD_PORTS",
+            "default_value": "hostfwd=tcp::8080-:80",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Enable UEFI",
+            "description": "Select '1' for UEFI boot (OVMF), '0' for Legacy/BIOS boot.",
+            "env_variable": "USE_UEFI",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Enable VirtIO Disk",
+            "description": "Select '1' for high-performance disk I/O, '0' for IDE emulation.",
+            "env_variable": "USE_VIRTIO",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Shared Directory",
+            "description": "Path to mount a host directory to the VM (e.g., /home/container/shared).",
+            "env_variable": "SHARED_DIR",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:255",
+            "field_type": "text"
+        },
+        {
+            "name": "Enable VirtIO GPU",
+            "description": "Select '1' to enable GPU acceleration (requires host GPU), '0' for standard VGA.",
+            "env_variable": "USE_GPU",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "Enable VirtIO Network",
+            "description": "Select '1' for high-speed networking, '0' for legacy Realtek card.",
+            "env_variable": "USE_VIRTIO_NET",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        }
+    ]
+}
