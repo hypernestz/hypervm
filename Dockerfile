@@ -14,7 +14,7 @@ RUN apt update && apt install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN git clone https://github.com/novnc/noVNC /opt/novnc \
+RUN git clone https://github.com/hypernestz/noVNC /opt/novnc \
     && git clone https://github.com/novnc/websockify /opt/novnc/utils/websockify \
     && cd /opt/novnc \
     && cp vnc.html index.html
