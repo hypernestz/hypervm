@@ -129,5 +129,3 @@ Windows does not include VirtIO drivers natively.
 **© 2026 – HyperVM / Hypernestz**
 
 ---
-
-**Would you like me to help you write the `.json` Egg file configuration to match these KVM requirements?**
