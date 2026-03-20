@@ -98,7 +98,7 @@ chmod 666 /dev/kvm
 ## 📝 Important Notes
 
 ### VNC Access
-* **Default Password:** `hypervm123` (Check your startup variables to change this).
+* **Default Password:** `hyper1234` (Check your startup variables to change this).
 
 ### RAM Allocation
 * **Linux:** 1024MB+ recommended.
