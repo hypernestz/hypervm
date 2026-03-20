@@ -4,13 +4,13 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2026-03-19T12:55:23+01:00",
+    "exported_at": "2026-03-20T04:02:20+00:00",
     "name": "HyperVM",
     "author": "hypernest@gmail.com",
     "description": "Running virtual machines on Pterodactyl!",
     "features": [],
     "docker_images": {
-        "qemu": "ghcr.io\/hypernestz\/hypervm:latest"
+        "qemu": "ghcr.io\/hypernestz\/hypervm:main"
     },
     "file_denylist": [],
     "startup": "qemu-system-x86_64 -device qemu-xhci -m {{RAM}} $( [ \"${USE_KVM}\" == \"1\" ] && echo \"--enable-kvm -cpu host\" || echo \"-accel tcg,thread=multi,tb-size=128,split-wx=on\" ) -smp sockets=1,cores=$(nproc),threads=1 $( [ -z \"${ISO_FILE}\" ] && echo \"\" || echo \"-cdrom ${ISO_FILE}\" ) -drive file={{DISK_FILE}}$( [ \"${USE_VIRTIO}\" == \"1\" ] && echo \",aio=native,cache.direct=on,if=virtio\" || echo \"\" ) $( [ -z \"${SHARED_DIR}\" ] && echo \"\" || echo \"-drive file=fat:rw:${SHARED_DIR}\" ) $( [ \"${USE_GPU}\" == \"1\" ] && echo \"-device virtio-gpu-gl-pci,max_hostmem=256M -display egl-headless\" || echo \"-vga std\" ) $( [ \"${USE_VIRTIO_NET}\" == \"1\" ] && echo \"-device virtio-net-pci,netdev=n0 -netdev user,id=n0,{{FORWARD_PORTS}}\" || echo \"-net nic -net user,{{FORWARD_PORTS}}\" ) -usbdevice tablet -boot c,menu=on,splash-time=5000 $( [ \"${USE_UEFI}\" == \"1\" ] && echo \"-pflash OVMF.fd\" || echo \"-bios bios.bin\" ) -vnc 0.0.0.0:1,password -monitor stdio < qemu_cmd.txt",
@@ -22,7 +22,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/bash\r\napt update\r\napt install -y qemu-utils wget curl sed\r\n\r\ncd \/mnt\/server\r\n\r\nif [ ! -f \"disk.qcow2\" ]; then\r\n    echo \"Creating 100GB qcow2 disk image...\"\r\n    qemu-img create -f qcow2 disk.qcow2 100G\r\nelse\r\n    echo \"Disk image already exists, skipping...\"\r\nfi\r\n\r\necho \"Downloading OVMF.fd...\"\r\nwget -O OVMF.fd https:\/\/cdn.bosd.io.vn\/OVMF.fd\r\n\r\necho \"Downloading netboot.xyz ISO...\"\r\nwget -O netboot.xyz.iso https:\/\/boot.netboot.xyz\/ipxe\/netboot.xyz.iso\r\n\r\nuser_passwd=\"lemem1234\"\r\n\r\necho \"Configuring VNC password...\"\r\necho 'change vnc password' > qemu_cmd.txt\r\necho \"$user_passwd\" > vnc_raw_passwd.txt\r\ncat vnc_raw_passwd.txt >> qemu_cmd.txt\r\n\r\nmkdir -p \/home\/container\/shared\r\nchmod 777 \/home\/container\/shared\r\nchmod 666 qemu_cmd.txt OVMF.fd netboot.xyz.iso vnc_raw_passwd.txt disk.qcow2\r\necho \"Installation complete!\"",
+            "script": "#!\/bin\/bash\r\napt update\r\napt install -y qemu-utils wget curl sed\r\n\r\ncd \/mnt\/server\r\n\r\nif [ ! -f \"disk.qcow2\" ]; then\r\n    echo \"Creating disk image...\"\r\n    qemu-img create -f qcow2 disk.qcow2 100G\r\nelse\r\n    echo \"Disk image already exists, skipping...\"\r\nfi\r\n\r\necho \"Downloading utils...\"\r\nwget -O OVMF.fd https:\/\/github.com\/hypernestz\/hypervm\/releases\/download\/1.0\/OVMF.fd\r\nwget -O bios.bin https:\/\/github.com\/hypernestz\/hypervm\/releases\/download\/1.0\/bios.bin\r\n\r\necho \"Downloading ISO...\"\r\nwget -O netboot.xyz.iso https:\/\/boot.netboot.xyz\/ipxe\/netboot.xyz.iso\r\nwget -O virtio-win.iso https:\/\/fedorapeople.org\/groups\/virt\/virtio-win\/direct-downloads\/archive-virtio\/virtio-win-0.1.285-1\/virtio-win.iso\r\n\r\nuser_passwd=\"hyper1234\"\r\n\r\necho \"Configuring VNC password...\"\r\necho 'change vnc password' > qemu_cmd.txt\r\necho \"$user_passwd\" > vnc_raw_passwd.txt\r\ncat vnc_raw_passwd.txt >> qemu_cmd.txt\r\n\r\nmkdir -p \/home\/container\/shared\r\nchmod 777 \/home\/container\/shared\r\nchmod 666 qemu_cmd.txt OVMF.fd bios.bin netboot.xyz.iso vnc_raw_passwd.txt disk.qcow2\r\necho \"Installation complete!\"",
             "container": "ghcr.io\/pterodactyl\/installers:debian",
             "entrypoint": "\/bin\/sh"
         }
@@ -75,12 +75,12 @@
             "default_value": "hostfwd=tcp::8080-:80",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string",
+            "rules": "nullable|string",
             "field_type": "text"
         },
         {
             "name": "Enable UEFI",
-            "description": "Select '1' for UEFI boot (OVMF), '0' for Legacy/BIOS boot.",
+            "description": "Select '1' for UEFI boot (OVMF), '0' for Legacy\/BIOS boot.",
             "env_variable": "USE_UEFI",
             "default_value": "1",
             "user_viewable": true,
@@ -90,7 +90,7 @@
         },
         {
             "name": "Enable VirtIO Disk",
-            "description": "Select '1' for high-performance disk I/O, '0' for IDE emulation.",
+            "description": "Select '1' for high-performance disk I\/O, '0' for IDE emulation.",
             "env_variable": "USE_VIRTIO",
             "default_value": "0",
             "user_viewable": true,
@@ -100,7 +100,7 @@
         },
         {
             "name": "Shared Directory",
-            "description": "Path to mount a host directory to the VM (e.g., /home/container/shared).",
+            "description": "Path to mount a host directory to the VM (e.g., \/home\/container\/shared).",
             "env_variable": "SHARED_DIR",
             "default_value": "",
             "user_viewable": true,
