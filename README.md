@@ -27,6 +27,8 @@
 
 ## 🛠 Installation (Custom Wings Binary)
 
+> [\!WARNING]  
+> **Mandatory Check:** Before installing, ensure Virtualization (Intel VT-x or AMD-V) is enabled in your BIOS. Run `ls /dev/kvm` on your host; if the file is missing, KVM is not enabled.
 To enable KVM features, you must replace the standard Pterodactyl Wings binary with the HyperVM version.
 
 ### 1. Download HyperVM Binary
