@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/hypernestz/hypervm/">
-    <img src="https://raw.githubusercontent.com/hypernestz/hypervm/refs/heads/main/qwdz79r.png" alt="HyperVM Logo" width="128" />
+    <img src="https://raw.githubusercontent.com/hypernestz/hypervm/refs/heads/main/qwdz79r.png" alt="HyperVM Logo" width="512" />
   </a>
 
   # HyperVM
