@@ -1,20 +1,18 @@
-<h1 align="center">HyperVM<br />
 <div align="center">
-<a href="https://github.com/hypernestz/hypervm/"><img src="https://github.com/hypernestz/hypervm/raw/master/qwdz79r.png" title="Logo" style="max-width:100%;" width="128" /></a>
+  <a href="https://github.com/hypernestz/hypervm/">
+    <img src="https://raw.githubusercontent.com/hypernestz/hypervm/refs/heads/main/qwdz79r.png" alt="HyperVM Logo" width="128" />
+  </a>
+
+  # HyperVM
+  **High-performance Virtual Machines for Pterodactyl**
+
+  [![Build Status](https://img.shields.io/github/actions/workflow/status/hypernestz/hypervm/build.yml)](https://github.com/hypernestz/hypervm/actions)
+  [![Version](https://img.shields.io/github/v/release/hypernestz/hypervm)](https://github.com/hypernestz/hypervm/releases)
+  [![License](https://img.shields.io/github/license/hypernestz/hypervm)](https://github.com/hypernestz/hypervm/blob/main/LICENSE)
+  [![Pulls](https://img.shields.io/docker/pulls/hypernestz/hypervm)](https://hub.docker.com/r/hypernestz/hypervm)
+
 </div>
-<div align="center">
 
-# HyperVM – Running virtual machine to Pterodactyl 
-
-**HyperVM** is a high-performance, modified Pterodactyl Wings binary designed to run **x86_64 Virtual Machines** using **QEMU/KVM**. It enables native hardware acceleration, UEFI support, and seamless VNC access directly within your Pterodactyl environment.
-
-[![Build]][build_url]
-[![Version]][tag_url]
-[![Size]][tag_url]
-[![Package]][pkg_url]
-[![Pulls]][hub_url]
-
-</div></h1>
 ---
 
 ## 🚀 Features
