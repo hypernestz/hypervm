@@ -8,6 +8,13 @@
 
 **HyperVM** is a high-performance, modified Pterodactyl Wings binary designed to run **x86_64 Virtual Machines** using **QEMU/KVM**. It enables native hardware acceleration, UEFI support, and seamless VNC access directly within your Pterodactyl environment.
 
+[![Build]][build_url]
+[![Version]][tag_url]
+[![Size]][tag_url]
+[![Package]][pkg_url]
+[![Pulls]][hub_url]
+
+</div></h1>
 ---
 
 ## 🚀 Features
